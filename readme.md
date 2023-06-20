@@ -4,6 +4,7 @@
 _A Production ready project that aims to kickstart building API based internal tools for business._
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/cookiecutter/cookiecutter-django/ci.yml?branch=master)](https://github.com/cookiecutter/cookiecutter-django/actions/workflows/ci.yml?query=branch%3Amaster) [![Documentation Status](https://readthedocs.org/projects/cookiecutter-django/badge/?version=latest)](https://cookiecutter-django.readthedocs.io/en/latest/?badge=latest) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+[![Code Coverage](https://img.shields.io/badge/coverage-94-blue)](https://github.com/Rakanhf/drf-internal-cookiecutter)
 
 ## Features
 
