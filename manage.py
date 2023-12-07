@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-# Project: MainBrain
+# Project: drf-internal-cookiecutter
 #       |\      _,,,---,,_
 # ZZZzz /,`.-'`'    -.  ;-;;,_
 #      |,4-  ) )-,_. ,\ (  `'-'
-#     '---''(_/--'  `-'\_)  
-#           @Netoceans                 
+#     '---''(_/--'  `-'\_)
+#           @Rakanhf
 #           Rakan Farhouda
 #
 
@@ -18,9 +18,9 @@ from mainbrain.settings import base
 def main():
     """Run administrative tasks."""
     if base.DEBUG:
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mainbrain.settings.dev')
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mainbrain.settings.dev")
     else:
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mainbrain.settings.prod')
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mainbrain.settings.prod")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -32,5 +32,5 @@ def main():
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "core",
     "authentication",
     "accounts",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -98,6 +99,40 @@ REST_FRAMEWORK = {
         "login": "9999/minute",
     },
     "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
+    "DEFAULT_SCHEMA_CLASS": "core.schema.CustomAutoSchema",
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "core.pagination.GlobalPagination",
+}
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "drf-internal-cookiecutter API",
+    "DESCRIPTION": (
+        "A Production ready project that aims to kickstart building API based internal tools for business. "
+        "This API provides endpoints for managing resources such as Users, Accounts, Auth, etc. "
+        "For authentication, we use token-based authentication, and details can be found in the Authentication section."
+    ),
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,  # Consider setting True if schema serving is desired
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
+    "CONTACT": {
+        "name": "Author",
+        "email": "hello@rakan.com.tr",
+        "url": "https://rakan.com.tr",
+    },
+    "TOS": "https://github.com/Rakanhf/drf-internal-cookiecutter/blob/main/CODE_OF_CONDUCT.md",
+    "LICENSE": {
+        "name": "MIT",
+        "url": "https://github.com/Rakanhf/drf-internal-cookiecutter/blob/main/LICENSE",
+    },
 }
 
 

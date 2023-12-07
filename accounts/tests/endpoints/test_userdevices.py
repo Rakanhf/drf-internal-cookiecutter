@@ -72,20 +72,6 @@ class TestUserDeviceEndpoint(APITestCase):
         response = self.client.post(reverse("accounts:users_devices-list"), data)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_update_user_device(self):
-        """
-        Ensure we can update a user device.
-        """
-        data = {
-            "ip_address": "127.0.0.12",
-            "user": self.user.id,
-            "user_agent": "desktop",
-        }
-        response = self.client.put(
-            reverse("accounts:users_devices-detail", args=[self.device.id]), data
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
     def test_delete_user_device(self):
         """
         Ensure we can delete a user device.
@@ -95,14 +81,33 @@ class TestUserDeviceEndpoint(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_partial_update_with_another_user(self):
+    def test_partial_update_with_allowed_fields(self):
         """
-        Ensure we can't partial update a user device with another user.
+        Ensure we can partial update a user device with only 'trusted' field.
         """
         data = {
-            "ip_address": "127.0.0.15",
+            "trusted": "true",
         }
         response = self.client.patch(
             reverse("accounts:users_devices-detail", args=[self.device2.id]), data
         )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_partial_update_with_permitted_fields(self):
+        """
+        Ensure we can't partial update a user device with permitted field.
+        """
+        data = {
+            "ip_address": "127.0.0.1",
+        }
+        response = self.client.patch(
+            reverse("accounts:users_devices-detail", args=[self.device2.id]), data
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_devices_me(self):
+        """
+        Ensure we can get a user device detail for the requester.
+        """
+        response = self.client.get(reverse("accounts:users_devices-me"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

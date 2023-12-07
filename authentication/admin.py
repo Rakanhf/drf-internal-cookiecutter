@@ -1,9 +1,9 @@
-# Project: MainBrain
+# Project: drf-internal-cookiecutter
 #       |\      _,,,---,,_
 # ZZZzz /,`.-'`'    -.  ;-;;,_
 #      |,4-  ) )-,_. ,\ (  `'-'
-#     '---''(_/--'  `-'\_)  
-#           @Netoceans                 
+#     '---''(_/--'  `-'\_)
+#           @Rakanhf
 #           Rakan Farhouda
 #
 

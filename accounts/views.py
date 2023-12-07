@@ -26,20 +26,25 @@ from accounts.serializers import (
     PermissionSerializer,
     UserDeviceSerializer,
     UserSerializer,
+    ProfileSerializer,
 )
+from accounts.models import Profile
 from authentication.helpers.ip_utils import get_client_ip
 from core.helpers.email_utils import EmailHelper
 from core.models import UserDevice
 from core.pagination import GlobalPagination
-from core.permissions import IsSuperUserOrDjangoModelPermissions
+from core.permissions import DynamicAccessPermission
 from core.views import DynamicFieldsModelViewSet, ListUpdateViewSet
 
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
+import operator
+from functools import reduce
 
 
 class UsersViewSet(DynamicFieldsModelViewSet):
     """
+    *Endpoint for managing Users.*
     Endpoint:
     =========
     GET /users
@@ -94,29 +99,41 @@ class UsersViewSet(DynamicFieldsModelViewSet):
 
 class GroupsViewSet(DynamicFieldsModelViewSet):
     """
+    *Endpoint for managing Permission Groups.*
     Endpoint:
     =========
     GET /groups
+    GET /groups/me
     POST /groups/
     PUT /groups/<id>/
     PATCH /groups/<id>/
     DELETE /groups/<id>/
     """
 
-    queryset = Group.objects.all()
+    queryset = Group.objects.all().order_by("-id")
     serializer_class = GroupSerializer
     filterset_fields = ["name"]
+
+    @action(detail=False, methods=["get"])
+    def me(self, request):
+        """
+        This custom action returns the user data for the requester.
+        """
+        user_groups = Group.objects.filter(user=request.user)
+        serializer = self.get_serializer(user_groups, many=True)
+        return Response(serializer.data)
 
 
 class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
     """
+    *Endpoint for managing Permissions.*
     Endpoint:
     =========
     GET /permissions
     """
 
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated, IsSuperUserOrDjangoModelPermissions]
+    permission_classes = [IsAuthenticated, DynamicAccessPermission]
     queryset = Permission.objects.all()
     serializer_class = PermissionSerializer
 
@@ -129,54 +146,96 @@ class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
             ("otp_totp", "totpdevice"),
             ("otp_email", "emaildevice"),
             ("phonenumber", "phonedevice"),
-            ("django_rest_passwordreset", "passwordresettoken"),
+            ("django_rest_passwordreset", "resetpasswordtoken"),
             ("core", "expiringtoken"),
             ("authentication", "customemaildevice"),
         ]
 
-        # Create Q objects for all models to exclude
-        q_objects = Q()
-        for app_label, model in models_to_exclude:
-            try:
-                content_type = ContentType.objects.get(app_label=app_label, model=model)
-                q_objects |= Q(content_type=content_type)
-            except ContentType.DoesNotExist:
-                print(f"No ContentType exists for app: '{app_label}' model: '{model}'")
+        content_types_to_exclude = ContentType.objects.filter(
+            reduce(
+                operator.or_,
+                (Q(app_label=app, model=model) for app, model in models_to_exclude),
+            )
+        )
 
+        # Create Q objects for all models to exclude
+        q_objects = Q(content_type__in=content_types_to_exclude)
         # Exclude all permissions related to these content types
         return Permission.objects.exclude(q_objects)
 
 
 class UserDeviceViewSet(ListUpdateViewSet):
     """
+    *Endpoint for managing devices.*
     Endpoint:
     =========
     GET /devices
+    GET /devices/me
     PUT /devices/<id>/
     PATCH /devices/<id>/
     DELETE /devices/<id>/
     """
 
     serializer_class = UserDeviceSerializer
+    queryset = UserDevice.objects.all()
+    drf_tag = "Devices"
 
-    def get_queryset(self):
-        return UserDevice.objects.filter(user=self.request.user).order_by("-last_login")
+    @action(detail=False, methods=["get"])
+    def me(self, request):
+        """
+        This custom action returns the user data for the requester.
+        """
+        user_devices = UserDevice.objects.filter(user=request.user)
+        serializer = self.get_serializer(user_devices, many=True)
+        return Response(serializer.data)
 
 
 class LogsViewSet(viewsets.ReadOnlyModelViewSet):
     """
+    *Endpoint for managing Logs.*
     Endpoint:
     =========
     GET /logs
+    GET /logs/me
     """
 
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated, IsSuperUserOrDjangoModelPermissions]
-    queryset = LogEntry.objects.all()
+    permission_classes = [IsAuthenticated, DynamicAccessPermission]
+    queryset = LogEntry.objects.all().order_by("-timestamp")
     pagination_class = GlobalPagination
     serializer_class = LogsSerializer
 
-    def get_queryset(self):
-        if self.request.user.is_superuser:
-            return LogEntry.objects.all().order_by("-timestamp")
-        return LogEntry.objects.filter(actor=self.request.user).order_by("-timestamp")
+    @action(detail=False, methods=["get"])
+    def me(self, request):
+        """
+        This custom action returns the user data for the requester.
+        """
+        user_logs = LogEntry.objects.filter(actor=request.user).order_by("-timestamp")
+        serializer = self.get_serializer(user_logs, many=True)
+        return Response(serializer.data)
+
+
+class ProfilesViewSet(DynamicFieldsModelViewSet):
+    """
+    *Endpoint for managing Profiles.*
+    Endpoint:
+    =========
+    GET /profiles
+    GET /profiles/me
+    POST /profiles/
+    PUT /profiles/<id>/
+    PATCH /profiles/<id>/
+    """
+
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    http_method_names = ["get", "put", "patch", "options"]
+
+    @action(detail=False, methods=["get"])
+    def me(self, request):
+        """
+        This custom action returns the user data for the requester.
+        """
+        user_profile = request.user.profile
+        serializer = self.get_serializer(user_profile)
+        return Response(serializer.data)

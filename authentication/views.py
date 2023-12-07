@@ -32,12 +32,14 @@ from core.models import UserDevice
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     """
+    *Handles token operations for API authentication.*
     Custom view to handle token pair creation with additional OTP flow for user authentication.
 
     Throttle login attempts to prevent brute-force attacks.
     """
 
     throttle_classes = [LoginThrottle]
+    drf_tag = "Login"
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -85,6 +87,7 @@ class OTPBaseView(generics.GenericAPIView):
     device_classes = {
         key: apps.get_model(val) for key, val in settings.OTP_DEVICE_CLASSES.items()
     }
+    drf_tag = "Auth"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -129,6 +132,7 @@ class OTPBaseView(generics.GenericAPIView):
 
 class TokenOTPObtainPairView(OTPBaseView):
     """
+    *Handles token operations for API authentication.*
     Custom view to handle token pair creation upon successful OTP verification.
 
     Once OTP is validated, temporary token is deleted and a new token pair (refresh and access)
@@ -136,6 +140,7 @@ class TokenOTPObtainPairView(OTPBaseView):
     """
 
     authentication_classes = [TemporaryTokenAuthentication]
+    drf_tag = "Login"
 
     def handle_valid_otp(self, user, device, request):
         user.delete_temporary_token()
@@ -167,11 +172,14 @@ class TokenOTPObtainPairView(OTPBaseView):
 
 class OTPSetupView(OTPBaseView):
     """
+    *Provides two-factor authentication settings and verification.*
     Custom view for initiating the OTP (One Time Password) setup process for a user.
 
     On successful POST, it creates or retrieves the OTP device associated with the user.
     If the device is not confirmed, it initiates the OTP setup process.
     """
+
+    drf_tag = "Two Factor Authentication"
 
     def post(self, request, *args, **kwargs):
         user = request.user
@@ -225,10 +233,13 @@ class OTPSetupView(OTPBaseView):
 
 class OTPVerifyView(OTPBaseView):
     """
+    *Provides two-factor authentication settings and verification.*
     Custom view for handling OTP (One Time Password) verification.
 
     On a valid OTP, the associated device is confirmed and OTP for the user is enabled.
     """
+
+    drf_tag = "Two Factor Authentication"
 
     def handle_valid_otp(self, user, device, request):
         if device.confirmed:
@@ -256,10 +267,13 @@ class OTPVerifyView(OTPBaseView):
 
 class OTPResendView(OTPBaseView):
     """
+    *Provides two-factor authentication settings and verification.*
     Custom view for handling OTP (One Time Password) resend requests.
 
     If the associated device is not confirmed, a new OTP challenge is generated.
     """
+
+    drf_tag = "Two Factor Authentication"
 
     def post(self, request, *args, **kwargs):
         user = request.user
@@ -290,11 +304,14 @@ class OTPResendView(OTPBaseView):
 
 class OTPHandleRequestView(OTPBaseView):
     """
+    *Handles token operations for API authentication.*
     Custom view for handling OTP request after initiating the OTP flow.
 
     This view receives the device id and type from the client,
     generates the OTP challenge and logs the user device.
     """
+
+    drf_tag = "Login"
 
     authentication_classes = [TemporaryTokenAuthentication]
 
@@ -316,11 +333,14 @@ class OTPHandleRequestView(OTPBaseView):
 
 class OTPDisableView(OTPBaseView):
     """
+    *Provides two-factor authentication settings and verification.*
     Custom view for disabling the OTP (One Time Password) for a user.
 
     On successful POST, it finds and deletes the OTP device associated with the user.
     It also updates the user's 2FA fields.
     """
+
+    drf_tag = "Two Factor Authentication"
 
     def post(self, request, *args, **kwargs):
         user = request.user

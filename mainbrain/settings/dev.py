@@ -1,9 +1,9 @@
-# Project: WeCare
+# Project: drf-internal-cookiecutter
 #       |\      _,,,---,,_
 # ZZZzz /,`.-'`'    -.  ;-;;,_
 #      |,4-  ) )-,_. ,\ (  `'-'
 #     '---''(_/--'  `-'\_)
-#           @Netoceans
+#           @Rakanhf
 #           Rakan Farhouda
 #
 

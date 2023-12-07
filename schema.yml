@@ -1,0 +1,1759 @@
+openapi: 3.0.3
+info:
+  title: drf-internal-cookiecutter API
+  version: 1.0.0
+  description: A Production ready project that aims to kickstart building API based
+    internal tools for business. This API provides endpoints for managing resources
+    such as Users, Accounts, Auth, etc. For authentication, we use token-based authentication,
+    and details can be found in the Authentication section.
+  termsOfService: https://github.com/Rakanhf/drf-internal-cookiecutter/blob/main/CODE_OF_CONDUCT.md
+  contact:
+    name: Author
+    email: hello@rakan.com.tr
+    url: https://rakan.com.tr
+  license:
+    name: MIT
+    url: https://github.com/Rakanhf/drf-internal-cookiecutter/blob/main/LICENSE
+paths:
+  /accounts/devices/:
+    get:
+      operationId: 'List Accounts Devices '
+      description: Endpoint for managing devices.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Devices
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserDeviceList'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/devices/{id}/:
+    get:
+      operationId: Accounts Devices Retrieve
+      description: Endpoint for managing devices.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user device.
+        required: true
+      tags:
+      - Devices
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDevice'
+          description: ''
+      x-custom-filter-fields: []
+    put:
+      operationId: Accounts Devices Update
+      description: Endpoint for managing devices.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user device.
+        required: true
+      tags:
+      - Devices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDevice'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserDevice'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserDevice'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDevice'
+          description: ''
+      x-custom-filter-fields: []
+    patch:
+      operationId: Accounts Devices Partial Update
+      description: Endpoint for managing devices.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user device.
+        required: true
+      tags:
+      - Devices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDevice'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDevice'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDevice'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDevice'
+          description: ''
+      x-custom-filter-fields: []
+    delete:
+      operationId: Accounts Devices Destroy
+      description: Endpoint for managing devices.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user device.
+        required: true
+      tags:
+      - Devices
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+      x-custom-filter-fields: []
+  /accounts/devices/me/:
+    get:
+      operationId: Accounts Devices Me Retrieve
+      description: Endpoint for managing devices.
+      tags:
+      - Devices
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDevice'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/groups/:
+    get:
+      operationId: 'List Accounts Groups '
+      description: Endpoint for managing Permission Groups.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Groups
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGroupList'
+          description: ''
+      x-custom-filter-fields: []
+    post:
+      operationId: 'Create Accounts Groups '
+      description: Endpoint for managing Permission Groups.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      tags:
+      - Groups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Group'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Group'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/groups/{id}/:
+    get:
+      operationId: Accounts Groups Retrieve
+      description: Endpoint for managing Permission Groups.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - Groups
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+      x-custom-filter-fields: []
+    put:
+      operationId: Accounts Groups Update
+      description: Endpoint for managing Permission Groups.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - Groups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Group'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Group'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+      x-custom-filter-fields: []
+    patch:
+      operationId: Accounts Groups Partial Update
+      description: Endpoint for managing Permission Groups.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - Groups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroup'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedGroup'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedGroup'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+      x-custom-filter-fields: []
+    delete:
+      operationId: Accounts Groups Destroy
+      description: Endpoint for managing Permission Groups.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - Groups
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+      x-custom-filter-fields: []
+  /accounts/groups/me/:
+    get:
+      operationId: Accounts Groups Me Retrieve
+      description: Endpoint for managing Permission Groups.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      tags:
+      - Groups
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/logs/:
+    get:
+      operationId: 'List Accounts Logs '
+      description: Endpoint for managing Logs.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Logs
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsList'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/logs/{id}/:
+    get:
+      operationId: Accounts Logs Retrieve
+      description: Endpoint for managing Logs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this log entry.
+        required: true
+      tags:
+      - Logs
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Logs'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/logs/me/:
+    get:
+      operationId: Accounts Logs Me Retrieve
+      description: Endpoint for managing Logs.
+      tags:
+      - Logs
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Logs'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/permissions/:
+    get:
+      operationId: 'List Accounts Permissions '
+      description: Endpoint for managing Permissions.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Permission
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPermissionList'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/permissions/{id}/:
+    get:
+      operationId: Accounts Permissions Retrieve
+      description: Endpoint for managing Permissions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this permission.
+        required: true
+      tags:
+      - Permission
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/profiles/:
+    get:
+      operationId: 'List Accounts Profiles '
+      description: Endpoint for managing Profiles.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProfileList'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/profiles/{id}/:
+    get:
+      operationId: Accounts Profiles Retrieve
+      description: Endpoint for managing Profiles.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - Profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+      x-custom-filter-fields: []
+    put:
+      operationId: Accounts Profiles Update
+      description: Endpoint for managing Profiles.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - Profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Profile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+      x-custom-filter-fields: []
+    patch:
+      operationId: Accounts Profiles Partial Update
+      description: Endpoint for managing Profiles.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - Profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/profiles/me/:
+    get:
+      operationId: Accounts Profiles Me Retrieve
+      description: Endpoint for managing Profiles.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      tags:
+      - Profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/users/:
+    get:
+      operationId: 'List Accounts Users '
+      description: Endpoint for managing Users.
+      parameters:
+      - in: query
+        name: email
+        schema:
+          type: string
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: query
+        name: first_name
+        schema:
+          type: string
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - in: query
+        name: last_name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: phone_number
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+      x-custom-filter-fields: []
+    post:
+      operationId: 'Create Accounts Users '
+      description: Endpoint for managing Users.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/users/{id}/:
+    get:
+      operationId: Accounts Users Retrieve
+      description: Endpoint for managing Users.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      x-custom-filter-fields: []
+    put:
+      operationId: Accounts Users Update
+      description: Endpoint for managing Users.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      x-custom-filter-fields: []
+    patch:
+      operationId: Accounts Users Partial Update
+      description: Endpoint for managing Users.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      x-custom-filter-fields: []
+    delete:
+      operationId: Accounts Users Destroy
+      description: Endpoint for managing Users.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+      x-custom-filter-fields: []
+  /accounts/users/change_password/:
+    post:
+      operationId: 'Create Accounts Users Change Password '
+      description: Endpoint for managing Users.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      x-custom-filter-fields: []
+  /accounts/users/me/:
+    get:
+      operationId: Accounts Users Me Retrieve
+      description: Endpoint for managing Users.
+      parameters:
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      x-custom-filter-fields: []
+  /auth/2fa/activate/:
+    post:
+      operationId: 'Create Auth 2Fa Activate '
+      description: Provides two-factor authentication settings and verification.
+      tags:
+      - Two Factor Authentication
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+      x-custom-filter-fields: []
+  /auth/2fa/challenge/:
+    post:
+      operationId: 'Create Auth 2Fa Challenge '
+      description: Handles token operations for API authentication.
+      tags:
+      - Login
+      responses:
+        '200':
+          description: No response body
+      x-custom-filter-fields: []
+  /auth/2fa/disable/:
+    post:
+      operationId: 'Create Auth 2Fa Disable '
+      description: Provides two-factor authentication settings and verification.
+      tags:
+      - Two Factor Authentication
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+      x-custom-filter-fields: []
+  /auth/2fa/resend/:
+    post:
+      operationId: 'Create Auth 2Fa Resend '
+      description: Provides two-factor authentication settings and verification.
+      tags:
+      - Two Factor Authentication
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+      x-custom-filter-fields: []
+  /auth/2fa/verify/:
+    post:
+      operationId: 'Create Auth 2Fa Verify '
+      description: Provides two-factor authentication settings and verification.
+      tags:
+      - Two Factor Authentication
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+      x-custom-filter-fields: []
+  /auth/reset-password/:
+    post:
+      operationId: 'Create Auth Reset Password '
+      tags:
+      - Reset Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Email'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Email'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+          description: ''
+      x-custom-filter-fields: []
+  /auth/reset-password/confirm/:
+    post:
+      operationId: 'Create Auth Reset Password Confirm '
+      tags:
+      - Reset Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordToken'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordToken'
+          description: ''
+      x-custom-filter-fields: []
+  /auth/reset-password/validate_token/:
+    post:
+      operationId: 'Create Auth Reset Password Validate Token '
+      tags:
+      - Reset Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetToken'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetToken'
+          description: ''
+      x-custom-filter-fields: []
+  /auth/token/:
+    post:
+      operationId: 'Create Auth Token '
+      description: Handles token operations for API authentication.
+      tags:
+      - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTokenObtainPair'
+          description: ''
+      x-custom-filter-fields: []
+  /auth/token/2fa/:
+    post:
+      operationId: 'Create Auth Token 2Fa '
+      description: Handles token operations for API authentication.
+      tags:
+      - Login
+      responses:
+        '200':
+          description: No response body
+      x-custom-filter-fields: []
+  /auth/token/refresh/:
+    post:
+      operationId: 'Create Auth Token Refresh '
+      description: TaggedView operations
+      tags:
+      - Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+      x-custom-filter-fields: []
+  /auth/token/verify/:
+    post:
+      operationId: 'Create Auth Token Verify '
+      description: TaggedView operations
+      tags:
+      - Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+      x-custom-filter-fields: []
+components:
+  schemas:
+    ActionEnum:
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      type: integer
+      description: |-
+        * `0` - create
+        * `1` - update
+        * `2` - delete
+        * `3` - access
+    CustomTokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+    Email:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 150
+        permissions:
+          type: array
+          items:
+            type: integer
+      required:
+      - id
+      - name
+    Logs:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        object_pk:
+          type: string
+          maxLength: 255
+        object_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        object_repr:
+          type: string
+          title: Object representation
+        action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
+          minimum: 0
+          maximum: 65535
+        changes:
+          type: string
+          title: Change message
+        remote_addr:
+          type: string
+          nullable: true
+          title: Remote address
+        timestamp:
+          type: string
+          format: date-time
+          readOnly: true
+        content_type:
+          type: integer
+        actor:
+          type: integer
+          nullable: true
+      required:
+      - action
+      - content_type
+      - id
+      - object_pk
+      - object_repr
+      - timestamp
+    PaginatedGroupList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+    PaginatedLogsList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Logs'
+    PaginatedPermissionList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+    PaginatedProfileList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Profile'
+    PaginatedUserDeviceList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDevice'
+    PaginatedUserList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    PasswordToken:
+      type: object
+      properties:
+        password:
+          type: string
+        token:
+          type: string
+      required:
+      - password
+      - token
+    PatchedGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 150
+        permissions:
+          type: array
+          items:
+            type: integer
+    PatchedProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        header_image:
+          type: string
+          format: uri
+        country:
+          type: string
+          nullable: true
+          maxLength: 50
+        city:
+          type: string
+          nullable: true
+          maxLength: 50
+        state:
+          type: string
+          nullable: true
+          maxLength: 50
+        address:
+          type: string
+          nullable: true
+          maxLength: 240
+        postal_code:
+          type: string
+          nullable: true
+          maxLength: 50
+        bio:
+          type: string
+          nullable: true
+          maxLength: 5000
+        occupation:
+          type: string
+          nullable: true
+          maxLength: 50
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        groups:
+          type: array
+          items:
+            type: integer
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_superuser:
+          type: boolean
+          readOnly: true
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        is_staff:
+          type: boolean
+          writeOnly: true
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        date_joined:
+          type: string
+          format: date-time
+        username:
+          type: string
+          writeOnly: true
+          nullable: true
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 75
+        phone_number:
+          type: string
+          maxLength: 128
+        avatar:
+          type: string
+          format: uri
+        enabled_2fa:
+          type: boolean
+        default_2fa_method:
+          type: string
+          nullable: true
+          maxLength: 10
+        user_permissions:
+          type: array
+          items:
+            type: integer
+          description: Specific permissions for this user.
+    PatchedUserDevice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user_agent:
+          type: string
+          maxLength: 255
+        ip_address:
+          type: string
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+        trusted:
+          type: boolean
+        user:
+          type: integer
+    Permission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        codename:
+          type: string
+          maxLength: 100
+        content_type:
+          type: integer
+      required:
+      - codename
+      - content_type
+      - id
+      - name
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        header_image:
+          type: string
+          format: uri
+        country:
+          type: string
+          nullable: true
+          maxLength: 50
+        city:
+          type: string
+          nullable: true
+          maxLength: 50
+        state:
+          type: string
+          nullable: true
+          maxLength: 50
+        address:
+          type: string
+          nullable: true
+          maxLength: 240
+        postal_code:
+          type: string
+          nullable: true
+          maxLength: 50
+        bio:
+          type: string
+          nullable: true
+          maxLength: 5000
+        occupation:
+          type: string
+          nullable: true
+          maxLength: 50
+      required:
+      - id
+      - user
+    ResetToken:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+      - token
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        groups:
+          type: array
+          items:
+            type: integer
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_superuser:
+          type: boolean
+          readOnly: true
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        is_staff:
+          type: boolean
+          writeOnly: true
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        date_joined:
+          type: string
+          format: date-time
+        username:
+          type: string
+          writeOnly: true
+          nullable: true
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 75
+        phone_number:
+          type: string
+          maxLength: 128
+        avatar:
+          type: string
+          format: uri
+        enabled_2fa:
+          type: boolean
+        default_2fa_method:
+          type: string
+          nullable: true
+          maxLength: 10
+        user_permissions:
+          type: array
+          items:
+            type: integer
+          description: Specific permissions for this user.
+      required:
+      - email
+      - groups
+      - id
+      - is_superuser
+      - phone_number
+    UserDevice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user_agent:
+          type: string
+          maxLength: 255
+        ip_address:
+          type: string
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+        trusted:
+          type: boolean
+        user:
+          type: integer
+      required:
+      - id
+      - ip_address
+      - last_login
+      - user
+      - user_agent
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -7,6 +7,8 @@
 #           Rakan Farhouda
 #
 
+from django.apps import apps
+from django.conf import settings
 from auditlog.models import LogEntry
 from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.models import BaseUserManager, Group, Permission
@@ -14,9 +16,11 @@ from rest_framework import serializers
 
 from core.helpers.email_utils import EmailHelper
 from core.models import UserDevice
+from accounts.models import Profile
+from core.serializers import DynamicFieldsSerializer
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(DynamicFieldsSerializer):
     groups = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Group.objects.all(), required=True
     )
@@ -31,10 +35,39 @@ class UserSerializer(serializers.ModelSerializer):
             "username": {"write_only": True, "required": False},
         }
 
+    def validate(self, data):
+        if self.instance:
+            for field in ["password", "is_superuser", "is_staff", "username"]:
+                if field in data:
+                    raise serializers.ValidationError(
+                        {field: f"Updating {field.replace('_', ' ')} is not allowed."}
+                    )
+        else:
+            for field in ["password", "is_superuser", "is_staff", "username"]:
+                if field in data:
+                    raise serializers.ValidationError(
+                        {field: f"{field.replace('_', ' ')} is not an allowed field."}
+                    )
+        return data
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         all_permissions = self.get_all_permissions(instance)
         representation["user_permissions"] = list(all_permissions)
+
+        # Retrieve device classes from settings
+        device_classes = {
+            key: apps.get_model(val) for key, val in settings.OTP_DEVICE_CLASSES.items()
+        }
+
+        # Iterate over device classes and check if the user has a confirmed device
+        confirmed_devices = []
+        for device_type, model in device_classes.items():
+            if model.objects.filter(user=instance, confirmed=True).exists():
+                confirmed_devices.append(device_type)
+
+        # Add confirmed devices to the representation
+        representation["otp_devices"] = confirmed_devices
         return representation
 
     def get_all_permissions(self, instance):
@@ -98,7 +131,7 @@ class ChangePasswordSerializer(serializers.Serializer):
         return value
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class GroupSerializer(DynamicFieldsSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation["permissions"] = [
@@ -111,25 +144,36 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class PermissionSerializer(serializers.ModelSerializer):
+class PermissionSerializer(DynamicFieldsSerializer):
     class Meta:
         model = Permission
         fields = "__all__"
 
 
-class UserDeviceSerializer(serializers.ModelSerializer):
+class UserDeviceSerializer(DynamicFieldsSerializer):
     class Meta:
         model = UserDevice
         fields = "__all__"
-        extra_kwargs = {
-            "user": {"read_only": True},
-            "last_login": {"read_only": True},
-            "ip_address": {"read_only": True},
-            "user_agent": {"read_only": True},
-        }
+
+    def validate(self, data):
+        if self.instance:
+            for field in ["user", "user_agent", "ip_address", "last_login"]:
+                if field in data:
+                    raise serializers.ValidationError(
+                        {field: f"Updating {field.replace('_', ' ')} is not allowed."}
+                    )
+        return data
 
 
-class LogsSerializer(serializers.ModelSerializer):
+class LogsSerializer(DynamicFieldsSerializer):
     class Meta:
         model = LogEntry
         exclude = ("additional_data", "serialized_data")
+
+
+class ProfileSerializer(DynamicFieldsSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = "__all__"

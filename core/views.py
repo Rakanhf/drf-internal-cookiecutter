@@ -14,14 +14,24 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from core.pagination import GlobalPagination
-from core.permissions import IsSuperUserOrDjangoModelPermissions
+from core.permissions import DynamicAccessPermission
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="fields",
+            type=OpenApiTypes.STR,
+            description="Comma-separated list of fields to include in the response",
+            required=False,
+        )
+    ]
+)
 class DynamicFieldsModelViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated, IsSuperUserOrDjangoModelPermissions]
+    permission_classes = [IsAuthenticated, DynamicAccessPermission]
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     pagination_class = GlobalPagination
 
@@ -32,11 +42,18 @@ class DynamicFieldsModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
         fields = self.request.query_params.get("fields")
+
         if fields:
-            fields = fields.split(",")
-            queryset = queryset.only(*fields)
+            requested_fields = set(fields.split(","))
+            valid_fields = {
+                field.name
+                for field in self.serializer_class.Meta.model._meta.get_fields()
+            }
+
+            # Only apply 'only' if there are valid fields requested
+            if requested_fields & valid_fields:
+                queryset = queryset.only(*requested_fields & valid_fields)
 
         return queryset
 
@@ -59,7 +76,7 @@ class ListUpdateViewSet(
     GenericViewSet,
 ):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated, IsSuperUserOrDjangoModelPermissions]
+    permission_classes = [IsAuthenticated, DynamicAccessPermission]
     """
     A viewset that provides default `update()`, `partial_update()`, `destroy()` and `list()` actions.
     """

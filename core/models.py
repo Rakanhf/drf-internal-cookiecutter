@@ -16,7 +16,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext as _
 from phonenumber_field.modelfields import PhoneNumberField
 from auditlog.context import disable_auditlog
-
+from accounts.models import Profile
 from core.validators import validate_image_file_extension
 
 
@@ -28,13 +28,15 @@ class CustomUserManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
+        profile, nan = Profile.objects.get_or_create(user=user)
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
-
-        return self.create_user(email, password, **extra_fields)
+        user = self.create_user(email, password, **extra_fields)
+        profile, nan = Profile.objects.get_or_create(user=user)
+        return user
 
 
 # Custom Abstract User with email as login field
@@ -54,13 +56,14 @@ class User(AbstractUser):
     enabled_2fa = models.BooleanField(default=False)
     default_2fa_method = models.CharField(max_length=10, null=True, blank=True)
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
+    REQUIRED_FIELDS = ["phone_number"]  # email is default required field
 
     objects = CustomUserManager()
 
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
+        ordering = ["-id"]
 
     def delete(self, *args, **kwargs):
         with disable_auditlog():
@@ -92,6 +95,7 @@ class UserDevice(models.Model):
 
     class Meta:
         unique_together = ("user", "user_agent", "ip_address")
+        ordering = ["-last_login"]
 
 
 auditlog.register(UserDevice)

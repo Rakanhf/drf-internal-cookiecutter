@@ -1,9 +1,9 @@
-# Project: MainBrain
+# Project: drf-internal-cookiecutter
 #       |\      _,,,---,,_
 # ZZZzz /,`.-'`'    -.  ;-;;,_
 #      |,4-  ) )-,_. ,\ (  `'-'
-#     '---''(_/--'  `-'\_)  
-#           @Netoceans                 
+#     '---''(_/--'  `-'\_)
+#           @Rakanhf
 #           Rakan Farhouda
 #
 
@@ -23,8 +23,8 @@ from django.core.asgi import get_asgi_application
 from mainbrain.settings import base
 
 if base.DEBUG:
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mainbrain.settings.dev')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mainbrain.settings.dev")
 else:
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mainbrain.settings.prod')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mainbrain.settings.prod")
 
 application = get_asgi_application()

@@ -106,3 +106,10 @@ class TestGroupEndpoint(APITestCase):
             reverse("accounts:groups-detail", args=[self.group.id]), data
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_groups_me(self):
+        """
+        Ensure we can get list of groups for the requester.
+        """
+        response = self.client.get(reverse("accounts:groups-me"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

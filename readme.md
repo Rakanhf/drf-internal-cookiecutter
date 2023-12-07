@@ -3,8 +3,10 @@
 
 _A Production ready project that aims to kickstart building API based internal tools for business._
 
+# <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green" /> 
+
 [![Build Status](https://img.shields.io/github/actions/workflow/status/cookiecutter/cookiecutter-django/ci.yml?branch=master)](https://github.com/cookiecutter/cookiecutter-django/actions/workflows/ci.yml?query=branch%3Amaster) [![Documentation Status](https://readthedocs.org/projects/cookiecutter-django/badge/?version=latest)](https://cookiecutter-django.readthedocs.io/en/latest/?badge=latest) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
-[![Code Coverage](https://img.shields.io/badge/coverage-94-blue)](https://github.com/Rakanhf/drf-internal-cookiecutter)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
 
@@ -47,7 +49,7 @@ _A Production ready project that aims to kickstart building API based internal t
 
 - Ready to use Auth endpoints (Login, Logout, 2FA, Reset Password etc.)
 
-- 31 endpoints ready to use
+- 43 endpoints ready to use
 
 - Optimized ModelViewSet for all endpoints that includes
 	- Authentication
@@ -56,7 +58,7 @@ _A Production ready project that aims to kickstart building API based internal t
 	- Pagination
 	- Custom queryset for ORM optimized `?fields` parameter
 - Custom pagination
-- OpenAPI documentation ready using [stoplight.io](https://stoplight.io/)
+- OpenAPI documentation ready using [drf-spectacular.](https://github.com/tfranzel/drf-spectacular)
 - Email login notifications for unrecognized devices 
 
 ## Requirements
@@ -118,12 +120,22 @@ Example:
 OTP_SMS_BODY_TEMPLATE = os.path.join(BASE_DIR, "core/templates/emails/auth/sms_otp.html")
 ```
 
-## API Docs `soon`
+## API Docs 
 _I have included the openapi schema so you can use it with your personal favorite API docs framework ._
-For example we will be using redocly
-- Create an account at [Redocly](https://redocly.com/reference/)
-- Upload the openapi shcema
-- Done :)
+* Swagger UI
+```bash
+http://127.0.0.1:8000/docs/
+```
+* Redoc UI
+```bash
+http://127.0.0.1:8000/docs/redoc/
+```
+
+## Testing
+_This project uses [coverage](https://github.com/nedbat/coveragepy) to measure the code coverage of the tests._
+```bash
+coverage run --omit='*/.venv/*' manage.py test
+```
 
 ## Notes
 - There is no built in registration endpoint since the aim of this project is accelerate building of internal tools and in many cases the users get created by the superuser instead.

@@ -16,11 +16,13 @@ from accounts.views import (
     PermissionViewSet,
     UserDeviceViewSet,
     UsersViewSet,
+    ProfilesViewSet,
 )
 
 router = routers.DefaultRouter()
 
 router.register(r"users", UsersViewSet, basename="users")
+router.register(r"profiles", ProfilesViewSet, basename="profiles")
 router.register(r"groups", GroupsViewSet, basename="groups")
 router.register(r"permissions", PermissionViewSet, basename="permissions")
 router.register(r"devices", UserDeviceViewSet, basename="users_devices")
