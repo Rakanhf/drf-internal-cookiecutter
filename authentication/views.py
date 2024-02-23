@@ -41,6 +41,7 @@ from authentication.serializers import (
     OTPSetupViewResponseSerializer,
     OTPDisableViewResponseSerializer,
     OTPResendViewSerializer,
+    OTPDeviceSerializer,
     )
 
 @extend_schema(
@@ -441,3 +442,57 @@ class OTPDisableView(OTPBaseView):
             if device_class.objects.filter(user=user).exists():
                 return True
         return False
+
+
+class OTPDeviceView(generics.GenericAPIView):
+    """
+    *Provides two-factor devices methods for listing OTP devices.*
+    Custom view for handling OTP (One Time Password) device management.
+
+    This view provides methods for listing OTP devices
+    associated with the user. It also provides methods for setting the default 2FA method.
+    """
+
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle]
+    device_classes = get_device_classes()
+    http_method_names = ["get"]
+    drf_tag = "Two Factor Authentication"
+
+    def get_device(self, user, otp_type):
+        device_class = self.device_classes.get(otp_type)
+
+        if not device_class:
+            raise ValidationError({"error": "Invalid 2FA type."})
+
+        try:
+            device = device_class.objects.get(user=user)
+        except device_class.DoesNotExist:
+            return None
+
+        return device
+    
+    @extend_schema(
+        responses={
+            status.HTTP_200_OK: OTPDeviceSerializer(),
+        },
+    )
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        return self.list_devices(user)
+
+    def list_devices(self, user):
+        devices = []
+        for otp_type in self.device_classes.keys():
+            device = self.get_device(user, otp_type)
+            if device:
+                devices.append(
+                    {
+                        "id": device.id,
+                        "type": otp_type,
+                        "name": device.name,
+                        "confirmed": device.confirmed,
+                    }
+                )
+        return Response(devices, status=status.HTTP_200_OK)

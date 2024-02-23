@@ -89,3 +89,9 @@ class OTPDisableViewResponseSerializer(serializers.Serializer):
 class OTPResendViewSerializer(serializers.Serializer):
     type = serializers.CharField(required=True)
     device_id = serializers.IntegerField(required=True)
+
+class OTPDeviceSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    type = serializers.CharField()
+    name = serializers.CharField(max_length=100)
+    confirmed = serializers.BooleanField()

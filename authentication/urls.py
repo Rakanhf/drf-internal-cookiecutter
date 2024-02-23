@@ -20,6 +20,7 @@ from authentication.views import (
     OTPSetupView,
     OTPVerifyView,
     TokenOTPObtainPairView,
+    OTPDeviceView,
 )
 
 urlpatterns = [
@@ -40,6 +41,7 @@ urlpatterns = [
     path("2fa/resend/", OTPResendView.as_view(), name="2fa_resend"),
     path("token/2fa/", TokenOTPObtainPairView.as_view(), name="token_otp_obtain_pair"),
     path("2fa/challenge/", OTPHandleRequestView.as_view(), name="2fa_challenge"),
+    path("2fa/devices/", OTPDeviceView.as_view(), name="2fa_devices"),
     path(
         r"reset-password/",
         include("django_rest_passwordreset.urls", namespace="password_reset"),
