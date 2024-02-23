@@ -233,7 +233,8 @@ class OTPSetupView(OTPBaseView):
                     }
                 )
         except device_class.DoesNotExist:
-            device = device_class.objects.create(user=user, confirmed=False)
+            device_name = f"{user.email} {self.otp_type.upper()} Device"
+            device = device_class.objects.create(user=user, confirmed=False, name=device_name)
 
         if self.otp_type == "sms":
             device.number = user.phone_number
