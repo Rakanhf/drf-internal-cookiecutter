@@ -12,6 +12,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
 
 from accounts.serializers import UserSerializer
 
@@ -39,3 +40,52 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data["user"] = UserSerializer(self.user).data
 
         return data
+
+class CustomTokenObtainPairResponseSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+    access = serializers.CharField()
+    header_types = serializers.CharField()
+    refresh_expires = serializers.IntegerField()
+    access_expires = serializers.IntegerField()
+    user = UserSerializer()
+
+class CustomTokenObtainPairResponse2FASerializer(serializers.Serializer):
+    message = serializers.CharField()
+    default = serializers.CharField()
+    token = serializers.CharField()
+    devices = serializers.DictField(child=serializers.IntegerField())
+
+class TokenOTPObtainPairSerializer(serializers.Serializer):
+    device_id = serializers.IntegerField(required=True)
+    token = serializers.CharField(required=True)
+    type = serializers.CharField(required=True)
+
+
+class TokenOTPObtainPairResponseSerializer(CustomTokenObtainPairResponseSerializer):
+    user_device_id = serializers.CharField()
+
+
+class OTPHandleRequestSerializer(serializers.Serializer):
+    device_id = serializers.IntegerField(required=True)
+    token = serializers.CharField(required=True)
+
+class OTPHandleRequestResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()
+    device_id = serializers.IntegerField()
+    type = serializers.CharField()
+
+class OTPSetupViewSerializer(serializers.Serializer):
+    type = serializers.CharField(required=True)
+
+class OTPSetupViewResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()
+    device_id = serializers.IntegerField()
+    method = serializers.CharField()
+    qr_data = serializers.CharField()
+
+class OTPDisableViewResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()
+
+class OTPResendViewSerializer(serializers.Serializer):
+    type = serializers.CharField(required=True)
+    device_id = serializers.IntegerField(required=True)

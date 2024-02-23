@@ -982,11 +982,27 @@ paths:
       description: Provides two-factor authentication settings and verification.
       tags:
       - Two Factor Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPSetupView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OTPSetupView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OTPSetupView'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OTPSetupViewResponse'
+          description: ''
       x-custom-filter-fields: []
   /auth/2fa/challenge/:
     post:
@@ -994,9 +1010,27 @@ paths:
       description: Handles token operations for API authentication.
       tags:
       - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPHandleRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OTPHandleRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OTPHandleRequest'
+        required: true
+      security:
+      - TemporaryTokenAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OTPHandleRequestResponse'
+          description: ''
       x-custom-filter-fields: []
   /auth/2fa/disable/:
     post:
@@ -1004,11 +1038,27 @@ paths:
       description: Provides two-factor authentication settings and verification.
       tags:
       - Two Factor Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPSetupView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OTPSetupView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OTPSetupView'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OTPDisableViewResponse'
+          description: ''
       x-custom-filter-fields: []
   /auth/2fa/resend/:
     post:
@@ -1016,11 +1066,27 @@ paths:
       description: Provides two-factor authentication settings and verification.
       tags:
       - Two Factor Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPResendView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OTPResendView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OTPResendView'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OTPDisableViewResponse'
+          description: ''
       x-custom-filter-fields: []
   /auth/2fa/verify/:
     post:
@@ -1028,11 +1094,27 @@ paths:
       description: Provides two-factor authentication settings and verification.
       tags:
       - Two Factor Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenOTPObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenOTPObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenOTPObtainPair'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OTPDisableViewResponse'
+          description: ''
       x-custom-filter-fields: []
   /auth/reset-password/:
     post:
@@ -1132,7 +1214,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomTokenObtainPair'
+                $ref: '#/components/schemas/CustomTokenObtainPairResponse'
+          description: ''
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTokenObtainPairResponse2FA'
           description: ''
       x-custom-filter-fields: []
   /auth/token/2fa/:
@@ -1141,9 +1229,27 @@ paths:
       description: Handles token operations for API authentication.
       tags:
       - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenOTPObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenOTPObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenOTPObtainPair'
+        required: true
+      security:
+      - TemporaryTokenAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenOTPObtainPairResponse'
+          description: ''
       x-custom-filter-fields: []
   /auth/token/refresh/:
     post:
@@ -1216,12 +1322,53 @@ components:
       properties:
         email:
           type: string
+          writeOnly: true
         password:
           type: string
           writeOnly: true
       required:
       - email
       - password
+    CustomTokenObtainPairResponse:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+        header_types:
+          type: string
+        refresh_expires:
+          type: integer
+        access_expires:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+      - access
+      - access_expires
+      - header_types
+      - refresh
+      - refresh_expires
+      - user
+    CustomTokenObtainPairResponse2FA:
+      type: object
+      properties:
+        message:
+          type: string
+        default:
+          type: string
+        token:
+          type: string
+        devices:
+          type: object
+          additionalProperties:
+            type: integer
+      required:
+      - default
+      - devices
+      - message
+      - token
     Email:
       type: object
       properties:
@@ -1268,7 +1415,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/ActionEnum'
           minimum: 0
-          maximum: 65535
+          maximum: 32767
         changes:
           type: string
           title: Change message
@@ -1292,6 +1439,69 @@ components:
       - object_pk
       - object_repr
       - timestamp
+    OTPDisableViewResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+      - message
+    OTPHandleRequest:
+      type: object
+      properties:
+        device_id:
+          type: integer
+        token:
+          type: string
+      required:
+      - device_id
+      - token
+    OTPHandleRequestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        device_id:
+          type: integer
+        type:
+          type: string
+      required:
+      - device_id
+      - message
+      - type
+    OTPResendView:
+      type: object
+      properties:
+        type:
+          type: string
+        device_id:
+          type: integer
+      required:
+      - device_id
+      - type
+    OTPSetupView:
+      type: object
+      properties:
+        type:
+          type: string
+      required:
+      - type
+    OTPSetupViewResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        device_id:
+          type: integer
+        method:
+          type: string
+        qr_data:
+          type: string
+      required:
+      - device_id
+      - message
+      - method
+      - qr_data
     PaginatedGroupList:
       type: object
       properties:
@@ -1485,6 +1695,16 @@ components:
           type: array
           items:
             type: integer
+        user_permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        otp_devices:
+          type: array
+          items:
+            type: string
+          readOnly: true
         password:
           type: string
           writeOnly: true
@@ -1539,11 +1759,6 @@ components:
           type: string
           nullable: true
           maxLength: 10
-        user_permissions:
-          type: array
-          items:
-            type: integer
-          description: Specific permissions for this user.
     PatchedUserDevice:
       type: object
       properties:
@@ -1632,6 +1847,44 @@ components:
           type: string
       required:
       - token
+    TokenOTPObtainPair:
+      type: object
+      properties:
+        device_id:
+          type: integer
+        token:
+          type: string
+        type:
+          type: string
+      required:
+      - device_id
+      - token
+      - type
+    TokenOTPObtainPairResponse:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+        header_types:
+          type: string
+        refresh_expires:
+          type: integer
+        access_expires:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        user_device_id:
+          type: string
+      required:
+      - access
+      - access_expires
+      - header_types
+      - refresh
+      - refresh_expires
+      - user
+      - user_device_id
     TokenRefresh:
       type: object
       properties:
@@ -1662,6 +1915,16 @@ components:
           type: array
           items:
             type: integer
+        user_permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        otp_devices:
+          type: array
+          items:
+            type: string
+          readOnly: true
         password:
           type: string
           writeOnly: true
@@ -1716,17 +1979,14 @@ components:
           type: string
           nullable: true
           maxLength: 10
-        user_permissions:
-          type: array
-          items:
-            type: integer
-          description: Specific permissions for this user.
       required:
       - email
       - groups
       - id
       - is_superuser
+      - otp_devices
       - phone_number
+      - user_permissions
     UserDevice:
       type: object
       properties:
@@ -1753,6 +2013,9 @@ components:
       - user
       - user_agent
   securitySchemes:
+    TemporaryTokenAuth:
+      type: http
+      scheme: bearer
     jwtAuth:
       type: http
       scheme: bearer

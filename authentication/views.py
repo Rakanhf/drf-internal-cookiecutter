@@ -8,7 +8,6 @@
 #
 
 
-from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django_user_agents.utils import get_user_agent
@@ -26,10 +25,30 @@ from accounts.serializers import UserSerializer
 from authentication.backends import TemporaryTokenAuthentication
 from authentication.helpers.ip_utils import get_client_ip
 from authentication.helpers.otp_helper import OTPLoginFlowHelper
+from authentication.helpers.device_helper import get_device_classes
 from authentication.throttling import LoginThrottle
 from core.models import UserDevice
+from drf_spectacular.utils import extend_schema
+from accounts.serializers import UserSerializer
+from authentication.serializers import (
+    TokenOTPObtainPairSerializer,
+    TokenOTPObtainPairResponseSerializer,
+    CustomTokenObtainPairResponseSerializer,
+    CustomTokenObtainPairResponse2FASerializer,
+    OTPHandleRequestSerializer,
+    OTPHandleRequestResponseSerializer,
+    OTPSetupViewSerializer,
+    OTPSetupViewResponseSerializer,
+    OTPDisableViewResponseSerializer,
+    OTPResendViewSerializer,
+    )
 
-
+@extend_schema(
+    responses={
+        status.HTTP_200_OK: CustomTokenObtainPairResponseSerializer,
+        status.HTTP_202_ACCEPTED: CustomTokenObtainPairResponse2FASerializer,
+    },
+)
 class CustomTokenObtainPairView(TokenObtainPairView):
     """
     *Handles token operations for API authentication.*
@@ -84,9 +103,7 @@ class OTPBaseView(generics.GenericAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     throttle_classes = [UserRateThrottle]
-    device_classes = {
-        key: apps.get_model(val) for key, val in settings.OTP_DEVICE_CLASSES.items()
-    }
+    device_classes = get_device_classes()
     drf_tag = "Auth"
 
     def __init__(self, **kwargs):
@@ -129,7 +146,12 @@ class OTPBaseView(generics.GenericAPIView):
     def handle_valid_otp(self, user, device, request):
         raise NotImplementedError()
 
-
+@extend_schema(
+    request=TokenOTPObtainPairSerializer,
+    responses={
+        status.HTTP_200_OK: TokenOTPObtainPairResponseSerializer,
+    },
+)
 class TokenOTPObtainPairView(OTPBaseView):
     """
     *Handles token operations for API authentication.*
@@ -169,7 +191,12 @@ class TokenOTPObtainPairView(OTPBaseView):
             data["user_device_id"] = user_device_id
         return Response(data, status=status.HTTP_200_OK)
 
-
+@extend_schema(
+    request=OTPSetupViewSerializer,
+    responses={
+        status.HTTP_200_OK: OTPSetupViewResponseSerializer,
+    },
+)
 class OTPSetupView(OTPBaseView):
     """
     *Provides two-factor authentication settings and verification.*
@@ -230,7 +257,12 @@ class OTPSetupView(OTPBaseView):
             status=status.HTTP_200_OK,
         )
 
-
+@extend_schema(
+    request=TokenOTPObtainPairSerializer,
+    responses={
+        status.HTTP_200_OK: OTPDisableViewResponseSerializer,
+    },
+)
 class OTPVerifyView(OTPBaseView):
     """
     *Provides two-factor authentication settings and verification.*
@@ -264,7 +296,12 @@ class OTPVerifyView(OTPBaseView):
             status=status.HTTP_200_OK,
         )
 
-
+@extend_schema(
+    request=OTPResendViewSerializer,
+    responses={
+        status.HTTP_200_OK: OTPDisableViewResponseSerializer,
+    },
+)
 class OTPResendView(OTPBaseView):
     """
     *Provides two-factor authentication settings and verification.*
@@ -301,7 +338,12 @@ class OTPResendView(OTPBaseView):
             status=status.HTTP_200_OK,
         )
 
-
+@extend_schema(
+    request=OTPHandleRequestSerializer,
+    responses={
+        status.HTTP_200_OK: OTPHandleRequestResponseSerializer,
+    },
+)
 class OTPHandleRequestView(OTPBaseView):
     """
     *Handles token operations for API authentication.*
@@ -330,7 +372,12 @@ class OTPHandleRequestView(OTPBaseView):
 
         return response
 
-
+@extend_schema(
+    request=OTPSetupViewSerializer,
+    responses={
+        status.HTTP_200_OK: OTPDisableViewResponseSerializer,
+    },
+)
 class OTPDisableView(OTPBaseView):
     """
     *Provides two-factor authentication settings and verification.*

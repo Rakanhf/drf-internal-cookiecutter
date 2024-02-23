@@ -17,6 +17,8 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import AuthenticationFailed, ParseError
+from drf_spectacular.extensions import OpenApiAuthenticationExtension
+from drf_spectacular.plumbing import build_bearer_security_scheme_object
 
 from core.models import ExpiringToken
 
@@ -128,3 +130,11 @@ class TemporaryTokenAuthentication(BaseAuthentication):
     def check_expiration(self, token):
         if token.is_expired:
             raise exceptions.AuthenticationFailed(_("Token has expired."))
+
+
+class TemporaryTokenAuthenticationExtension(OpenApiAuthenticationExtension):
+    target_class = TemporaryTokenAuthentication  # replace with your import path
+    name = 'TemporaryTokenAuth'
+
+    def get_security_definition(self, auto_schema):
+        return build_bearer_security_scheme_object(header_name='Authorization', token_prefix='Bearer')

@@ -123,6 +123,10 @@ SPECTACULAR_SETTINGS = {
         "persistAuthorization": True,
         "displayOperationId": True,
     },
+    "AUTHENTICATION_CLASSES": [
+        "authentication.backends.JWTAuthentication",
+        "authentication.backends.TemporaryTokenAuthenticationExtension",
+    ],
     "CONTACT": {
         "name": "Author",
         "email": "hello@rakan.com.tr",
@@ -139,11 +143,11 @@ SPECTACULAR_SETTINGS = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
+        "NAME": config("POSTGRES_DB"),
+        "HOST": config("POSTGRES_HOST"),
+        "USER": config("POSTGRES_USER"),
+        "PORT": config("POSTGRES_PORT"),
+        "PASSWORD": config("POSTGRES_PASSWORD"),
         "sslmode": "require",
     }
 }
