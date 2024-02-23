@@ -1,3 +1,12 @@
+# Project: drf-internal-cookiecutter
+#       |\      _,,,---,,_
+# ZZZzz /,`.-'`'    -.  ;-;;,_
+#      |,4-  ) )-,_. ,\ (  `'-'
+#     '---''(_/--'  `-'\_)
+#           @Rakanhf
+#           Rakan Farhouda
+#
+
 import random
 from faker import Faker
 from django.core.management.base import BaseCommand
