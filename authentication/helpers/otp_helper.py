@@ -8,8 +8,6 @@
 #
 
 
-from django.apps import apps
-from django.conf import settings
 from django_user_agents.utils import get_user_agent
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -17,6 +15,7 @@ from rest_framework.response import Response
 
 from authentication.helpers.ip_utils import get_client_ip
 from authentication.helpers.login_helper import LogUserDevice
+from authentication.helpers.device_helper import get_device_classes
 from core.models import UserDevice
 
 
@@ -31,9 +30,7 @@ class OTPLoginFlowHelper:
     def __init__(self, request, user, method=None):
         self.request = request
         self.user = user
-        self.device_classes = {
-            key: apps.get_model(val) for key, val in settings.OTP_DEVICE_CLASSES.items()
-        }
+        self.device_classes = get_device_classes()
         self.method = method
 
     def start_otp_flow(self):

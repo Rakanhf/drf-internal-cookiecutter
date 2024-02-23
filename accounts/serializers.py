@@ -7,14 +7,13 @@
 #           Rakan Farhouda
 #
 
-from django.apps import apps
-from django.conf import settings
 from auditlog.models import LogEntry
 from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.models import BaseUserManager, Group, Permission
 from rest_framework import serializers
 
 from core.helpers.email_utils import EmailHelper
+from authentication.helpers.device_helper import get_device_classes
 from core.models import UserDevice
 from accounts.models import Profile
 from core.serializers import DynamicFieldsSerializer
@@ -24,6 +23,8 @@ class UserSerializer(DynamicFieldsSerializer):
     groups = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Group.objects.all(), required=True
     )
+    user_permissions = serializers.ListSerializer(read_only=True, required=False, child=serializers.CharField())
+    otp_devices = serializers.ListSerializer(read_only=True, required=False, child=serializers.CharField())
 
     class Meta:
         model = get_user_model()
@@ -56,9 +57,7 @@ class UserSerializer(DynamicFieldsSerializer):
         representation["user_permissions"] = list(all_permissions)
 
         # Retrieve device classes from settings
-        device_classes = {
-            key: apps.get_model(val) for key, val in settings.OTP_DEVICE_CLASSES.items()
-        }
+        device_classes = get_device_classes()
 
         # Iterate over device classes and check if the user has a confirmed device
         confirmed_devices = []
