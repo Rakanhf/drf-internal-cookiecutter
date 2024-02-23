@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "phonenumber_field",
     "django_filters",
     "django_otp",
+    "django_otp.plugins.otp_static",
     "django_otp.plugins.otp_totp",
     "django_otp.plugins.otp_email",
     "two_factor",
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_otp.middleware.OTPMiddleware",
     "core.middleware.JWTAuthenticationMiddleware",
     "auditlog.middleware.AuditlogMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -66,7 +68,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "mainbrain.urls"
-
+LOGIN_URL = "two_factor:login"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

@@ -17,9 +17,11 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from two_factor.urls import urlpatterns as tf_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('', include(tf_urls)),
     path(
         "auth/",
         include(("authentication.urls", "authentication"), namespace="authentication"),
