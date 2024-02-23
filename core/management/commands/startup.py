@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+
 # Project: drf-internal-cookiecutter
 #       |\      _,,,---,,_
 # ZZZzz /,`.-'`'    -.  ;-;;,_
@@ -12,7 +13,9 @@ from django.core.management import call_command
 
 
 class Command(BaseCommand):
-    help = 'Runs the startup sequence: wait for db, makemigrations, migrate, migrate_user'
+    help = (
+        'Runs the startup sequence: wait for db, makemigrations, migrate, migrate_user'
+    )
 
     def handle(self, *args, **options):
 

@@ -137,4 +137,6 @@ class TemporaryTokenAuthenticationExtension(OpenApiAuthenticationExtension):
     name = 'TemporaryTokenAuth'
 
     def get_security_definition(self, auto_schema):
-        return build_bearer_security_scheme_object(header_name='Authorization', token_prefix='Bearer')
+        return build_bearer_security_scheme_object(
+            header_name='Authorization', token_prefix='Bearer'
+        )

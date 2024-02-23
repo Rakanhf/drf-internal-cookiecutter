@@ -41,6 +41,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return data
 
+
 class CustomTokenObtainPairResponseSerializer(serializers.Serializer):
     refresh = serializers.CharField()
     access = serializers.CharField()
@@ -49,11 +50,13 @@ class CustomTokenObtainPairResponseSerializer(serializers.Serializer):
     access_expires = serializers.IntegerField()
     user = UserSerializer()
 
+
 class CustomTokenObtainPairResponse2FASerializer(serializers.Serializer):
     message = serializers.CharField()
     default = serializers.CharField()
     token = serializers.CharField()
     devices = serializers.DictField(child=serializers.IntegerField())
+
 
 class TokenOTPObtainPairSerializer(serializers.Serializer):
     device_id = serializers.IntegerField(required=True)
@@ -69,13 +72,16 @@ class OTPHandleRequestSerializer(serializers.Serializer):
     device_id = serializers.IntegerField(required=True)
     token = serializers.CharField(required=True)
 
+
 class OTPHandleRequestResponseSerializer(serializers.Serializer):
     message = serializers.CharField()
     device_id = serializers.IntegerField()
     type = serializers.CharField()
 
+
 class OTPSetupViewSerializer(serializers.Serializer):
     type = serializers.CharField(required=True)
+
 
 class OTPSetupViewResponseSerializer(serializers.Serializer):
     message = serializers.CharField()
@@ -83,12 +89,15 @@ class OTPSetupViewResponseSerializer(serializers.Serializer):
     method = serializers.CharField()
     qr_data = serializers.CharField()
 
+
 class OTPDisableViewResponseSerializer(serializers.Serializer):
     message = serializers.CharField()
+
 
 class OTPResendViewSerializer(serializers.Serializer):
     type = serializers.CharField(required=True)
     device_id = serializers.IntegerField(required=True)
+
 
 class OTPDeviceSerializer(serializers.Serializer):
     id = serializers.IntegerField()

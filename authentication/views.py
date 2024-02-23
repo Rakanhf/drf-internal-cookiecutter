@@ -42,7 +42,8 @@ from authentication.serializers import (
     OTPDisableViewResponseSerializer,
     OTPResendViewSerializer,
     OTPDeviceSerializer,
-    )
+)
+
 
 @extend_schema(
     responses={
@@ -147,6 +148,7 @@ class OTPBaseView(generics.GenericAPIView):
     def handle_valid_otp(self, user, device, request):
         raise NotImplementedError()
 
+
 @extend_schema(
     request=TokenOTPObtainPairSerializer,
     responses={
@@ -192,6 +194,7 @@ class TokenOTPObtainPairView(OTPBaseView):
             data["user_device_id"] = user_device_id
         return Response(data, status=status.HTTP_200_OK)
 
+
 @extend_schema(
     request=OTPSetupViewSerializer,
     responses={
@@ -235,7 +238,9 @@ class OTPSetupView(OTPBaseView):
                 )
         except device_class.DoesNotExist:
             device_name = f"{user.email} {self.otp_type.upper()} Device"
-            device = device_class.objects.create(user=user, confirmed=False, name=device_name)
+            device = device_class.objects.create(
+                user=user, confirmed=False, name=device_name
+            )
 
         if self.otp_type == "sms":
             device.number = user.phone_number
@@ -258,6 +263,7 @@ class OTPSetupView(OTPBaseView):
             },
             status=status.HTTP_200_OK,
         )
+
 
 @extend_schema(
     request=TokenOTPObtainPairSerializer,
@@ -297,6 +303,7 @@ class OTPVerifyView(OTPBaseView):
             {"message": f"{self.otp_type.upper()} 2FA verified and enabled."},
             status=status.HTTP_200_OK,
         )
+
 
 @extend_schema(
     request=OTPResendViewSerializer,
@@ -340,6 +347,7 @@ class OTPResendView(OTPBaseView):
             status=status.HTTP_200_OK,
         )
 
+
 @extend_schema(
     request=OTPHandleRequestSerializer,
     responses={
@@ -373,6 +381,7 @@ class OTPHandleRequestView(OTPBaseView):
         response = otp_helper.handle_otp_request(device_id)
 
         return response
+
 
 @extend_schema(
     request=OTPSetupViewSerializer,
@@ -472,7 +481,7 @@ class OTPDeviceView(generics.GenericAPIView):
             return None
 
         return device
-    
+
     @extend_schema(
         responses={
             status.HTTP_200_OK: OTPDeviceSerializer(),

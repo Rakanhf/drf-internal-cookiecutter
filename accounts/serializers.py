@@ -23,8 +23,12 @@ class UserSerializer(DynamicFieldsSerializer):
     groups = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Group.objects.all(), required=True
     )
-    user_permissions = serializers.ListSerializer(read_only=True, required=False, child=serializers.CharField())
-    otp_devices = serializers.ListSerializer(read_only=True, required=False, child=serializers.CharField())
+    user_permissions = serializers.ListSerializer(
+        read_only=True, required=False, child=serializers.CharField()
+    )
+    otp_devices = serializers.ListSerializer(
+        read_only=True, required=False, child=serializers.CharField()
+    )
 
     class Meta:
         model = get_user_model()
