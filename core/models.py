@@ -97,6 +97,9 @@ class UserDevice(models.Model):
         unique_together = ("user", "user_agent", "ip_address")
         ordering = ["-last_login"]
 
+    def __str__(self):
+        return f"{self.user} - {self.user_agent} - {self.ip_address}"
+
 
 auditlog.register(UserDevice)
 

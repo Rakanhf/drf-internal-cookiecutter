@@ -40,5 +40,7 @@ class Profile(models.Model):
         verbose_name_plural = _("profiles")
         ordering = ["-id"]
 
+    def __str__(self):
+        return f"{self.user} Profile"
 
 auditlog.register(Profile)
